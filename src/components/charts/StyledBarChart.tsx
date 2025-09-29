@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { useState } from "react";
 import {
   BarChart,
@@ -17,22 +15,22 @@ import {
 import { CustomTooltip } from "@/components/charts/CustomTooltip";
 import { CustomBarLabel } from "@/components/charts/CustomBarLabel";
 import { CustomLegend } from "@/components/charts/CustomLegend";
+import { ChartSkeleton } from "./ChartSkeleton";
+import { formatAxisValue } from "@/lib/formatters";
+import type { ChartData } from "@/types";
+import { getBarChartData } from "@/services/chartService";
+import { useFetchData } from "@/hooks/useFetchData";
+interface StyledBarChartProps {
+  isVisible: boolean;
+}
 
-const chartData = [
-  { name: "Enero", ventas: 40000000, gastos: 24000000 },
-  { name: "Febrero", ventas: 30000000, gastos: 13980000 },
-  { name: "Marzo", ventas: 50000000, gastos: 98000000 },
-  { name: "Abril", ventas: 27800000, gastos: 39080000 },
-  { name: "Mayo", ventas: 18900000, gastos: 48000000 },
-  { name: "Junio", ventas: 23900000, gastos: 38000000 },
-];
-
-const formatAxisValue = (value: number) => {
-  if (value >= 1000000) return `$${value / 1000000}M`;
-  return `$${value / 1000}k`;
-};
-
-export const StyledBarChart = () => {
+export const StyledBarChart = ({ isVisible }: StyledBarChartProps) => {
+  const {
+    data: chartData,
+    loading,
+    error,
+    refetch,
+  } = useFetchData(getBarChartData, { enabled: isVisible });
   const [visibleSeries, setVisibleSeries] = useState(
     new Set(["ventas", "gastos"])
   );
@@ -40,16 +38,40 @@ export const StyledBarChart = () => {
 
   const handleLegendToggle = (dataKey: string) => {
     const newVisibleSeries = new Set(visibleSeries);
-    if (newVisibleSeries.has(dataKey)) newVisibleSeries.delete(dataKey);
-    else newVisibleSeries.add(dataKey);
+    if (newVisibleSeries.has(dataKey)) {
+      newVisibleSeries.delete(dataKey);
+    } else {
+      newVisibleSeries.add(dataKey);
+    }
     setVisibleSeries(newVisibleSeries);
   };
 
-  const handleBarClick = (data: any) => {
+  const handleBarClick = (data: ChartData) => {
     if (data && data.name) {
       setFocusedBar(focusedBar === data.name ? null : data.name);
     }
   };
+
+  if (loading) {
+    return <ChartSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-red-500">
+        <p className="font-semibold">¡Ups! Algo salió mal.</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+          {error.message}
+        </p>
+        <button
+          onClick={refetch}
+          className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+        >
+          Reintentar
+        </button>
+      </div>
+    );
+  }
 
   if (!chartData || chartData.length === 0) {
     return (
@@ -131,7 +153,7 @@ export const StyledBarChart = () => {
             fill="url(#colorVentas)"
             radius={[4, 4, 0, 0]}
             name="Ventas"
-            label={<CustomBarLabel />}
+            label={<CustomBarLabel value={0} width={0} x={0} y={0} />}
             isAnimationActive
             animationDuration={800}
             onClick={handleBarClick}
@@ -150,7 +172,7 @@ export const StyledBarChart = () => {
             fill="url(#colorGastos)"
             radius={[4, 4, 0, 0]}
             name="Gastos"
-            label={<CustomBarLabel />}
+            label={<CustomBarLabel value={0} width={0} x={0} y={0} />}
             isAnimationActive
             animationDuration={800}
             onClick={handleBarClick}

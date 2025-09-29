@@ -1,41 +1,31 @@
 import { useState, useEffect, useCallback } from "react";
 
-// Define el estado para el hook
 interface FetchState<T> {
   data: T | null;
   loading: boolean;
   error: Error | null;
 }
 
-/**
- * Hook personalizado para obtener datos de una función de servicio.
- * Maneja los estados de carga, error y datos de forma automática.
- * @param serviceFunction - La función del servicio que devuelve una promesa con los datos.
- * @param params - Parámetros opcionales para pasar a la función del servicio.
- */
+interface UseFetchDataOptions {
+  enabled: boolean;
+}
+
 export function useFetchData<T>(
-  serviceFunction: (...args: any[]) => Promise<T>,
-  ...params: any[]
-) {
+  serviceFunction: () => Promise<T>,
+  options: UseFetchDataOptions = { enabled: true }
+): FetchState<T> & { refetch: () => void } {
+  const { enabled } = options;
   const [state, setState] = useState<FetchState<T>>({
     data: null,
-    loading: true,
+    loading: enabled,
     error: null,
   });
 
   const fetchData = useCallback(async () => {
-    setState({
-      data: null,
-      loading: true,
-      error: null,
-    });
+    setState({ data: null, loading: true, error: null });
     try {
-      const response = await serviceFunction(...params);
-      setState({
-        data: response,
-        loading: false,
-        error: null,
-      });
+      const response = await serviceFunction();
+      setState({ data: response, loading: false, error: null });
     } catch (error) {
       console.error("Error fetching data:", error);
       setState({
@@ -44,14 +34,16 @@ export function useFetchData<T>(
         error:
           error instanceof Error
             ? error
-            : new Error("An unknown error occurred"),
+            : new Error("Ocurrió un error desconocido"),
       });
     }
-  }, [serviceFunction, ...params]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [serviceFunction]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (enabled) {
+      fetchData();
+    }
+  }, [enabled, fetchData]);
 
   return { ...state, refetch: fetchData };
 }

@@ -1,14 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { useSpring, animated } from "@react-spring/web";
+import { formatBarLabelValue } from "@/lib/formatters";
 
-const formatValue = (value: number) => {
-  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `${(value / 1000).toFixed(0)}k`;
-  return `${value}`;
-};
+interface CustomBarLabelProps {
+  x: number;
+  y: number;
+  width: number;
+  value: number;
+}
 
-export const CustomBarLabel = (props: any) => {
+export const CustomBarLabel = (props: CustomBarLabelProps) => {
   const { x, y, width, value } = props;
 
   const { number } = useSpring({
@@ -30,7 +30,7 @@ export const CustomBarLabel = (props: any) => {
       fontSize={12}
       fontWeight="500"
     >
-      {number.to((n) => formatValue(n))}
+      {number.to((n) => formatBarLabelValue(n))}
     </animated.text>
   );
 };

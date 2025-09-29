@@ -46,3 +46,22 @@ export interface CategoricalDataPoint {
   name: string; // Nombre de la categoría
   value: number;
 }
+
+// Gráfica de Barras
+export interface ChartData {
+  name: string;
+  ventas: number;
+  gastos: number;
+}
+
+// Gráfica de Pastel (Pie)
+export interface SectorData {
+  name: string;
+  value: number;
+}
+
+// Gráfica de Línea/Área
+export interface TimeSeriesData {
+  date: string;
+  value: number;
+}

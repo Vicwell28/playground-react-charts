@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 interface CustomLegendProps {
-  payload?: any[];
+  payload?: { dataKey: string; value: string }[];
   onToggle: (dataKey: string) => void;
   visibleSeries: Set<string>;
 }
 
-const COLORS = {
+const COLORS: { [key: string]: string } = {
   Ventas: "#3b82f6",
   Gastos: "#ec4899",
 };
@@ -32,7 +30,7 @@ export const CustomLegend = ({
           >
             <div
               className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: COLORS[value as keyof typeof COLORS] }}
+              style={{ backgroundColor: COLORS[value] }}
             />
             <span className="text-sm text-gray-700 dark:text-gray-300">
               {value}

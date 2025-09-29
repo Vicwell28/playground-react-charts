@@ -55,3 +55,14 @@ export function formatDateShort(date: Date | string): string {
     day: "2-digit",
   }).format(dateObj);
 }
+
+export const formatAxisValue = (value: number): string => {
+  if (value >= 1000000) return `$${value / 1000000}M`;
+  return `$${value / 1000}k`;
+};
+
+export const formatBarLabelValue = (value: number): string => {
+  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
+  if (value >= 1000) return `${(value / 1000).toFixed(0)}k`;
+  return `${value}`;
+};

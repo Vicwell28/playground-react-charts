@@ -1,6 +1,6 @@
 import type { TooltipProps } from "recharts";
 
-const COLORS = {
+const COLORS: { [key: string]: string } = {
   Ventas: "#3b82f6",
   Gastos: "#ec4899",
 };
@@ -22,14 +22,13 @@ export const CustomTooltip = ({
             <span
               className="w-3 h-3 rounded-full"
               style={{
-                backgroundColor:
-                  COLORS[entry.name as keyof typeof COLORS] ?? "#999",
+                backgroundColor: COLORS[entry.name!] ?? "#999",
               }}
             />
             <p className="text-sm text-gray-700 dark:text-gray-300">
               {`${entry.name}: `}
               <span className="font-medium text-gray-800 dark:text-gray-200 ml-1.5">
-                {entry.value.toLocaleString("es-MX", {
+                {entry.value!.toLocaleString("es-MX", {
                   style: "currency",
                   currency: "MXN",
                 })}
