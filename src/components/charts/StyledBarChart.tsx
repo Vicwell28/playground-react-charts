@@ -18,7 +18,7 @@ import { CustomLegend } from "@/components/charts/CustomLegend";
 import { ChartSkeleton } from "./ChartSkeleton";
 import { formatAxisValue } from "@/lib/formatters";
 import type { ChartData } from "@/types";
-import { getBarChartData } from "@/services/chartService";
+import { getChartData } from "@/services/chartService";
 import { useFetchData } from "@/hooks/useFetchData";
 interface StyledBarChartProps {
   isVisible: boolean;
@@ -30,7 +30,7 @@ export const StyledBarChart = ({ isVisible }: StyledBarChartProps) => {
     loading,
     error,
     refetch,
-  } = useFetchData(getBarChartData, { enabled: isVisible });
+  } = useFetchData(getChartData, { enabled: isVisible });
   const [visibleSeries, setVisibleSeries] = useState(
     new Set(["ventas", "gastos"])
   );
@@ -136,14 +136,14 @@ export const StyledBarChart = ({ isVisible }: StyledBarChartProps) => {
             }
           />
 
-          <ReferenceLine y={60000000} stroke="#f59e0b" strokeDasharray="3 3">
+          <ReferenceLine y={40000000} stroke="#f59e0b" strokeDasharray="3 3">
             <Label
               value="Meta de Ventas"
               position="insideTopLeft"
               fill="#f59e0b"
               fontSize={12}
               dy={-20}
-              dx={20}
+              dx={500}
             />
           </ReferenceLine>
 

@@ -29,18 +29,12 @@ export const getChartData = (): Promise<ChartData[]> => {
 };
 
 // --- DATOS Y SERVICIO PARA GRÁFICA DE BARRAS ---
-const barChartMockData: ChartData[] = [
-  { name: "Enero", ventas: 40000000, gastos: 24000000 },
-  { name: "Febrero", ventas: 30000000, gastos: 13980000 },
-  // ... (otros meses)
-];
-
 export const getBarChartData = (): Promise<ChartData[]> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (Math.random() < 0.1)
         reject(new Error("Error al cargar datos de ventas."));
-      else resolve(barChartMockData);
+      else resolve(mockData);
     }, 1200);
   });
 };
